@@ -1,5 +1,9 @@
 [workspace]
-members = ["vmm-sys-util"]
+members = [
+    "vmm-sys-util",
+    "vm-superio",
+    "vm-superio-ser",
+]
 resolver = "2"
 
 [profile.bench]
