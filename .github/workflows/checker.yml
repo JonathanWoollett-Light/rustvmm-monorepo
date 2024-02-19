@@ -1,0 +1,29 @@
+on:
+  push:
+
+jobs:
+  rust:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include: 
+          - instance: c5.metal
+            ami: ami-0e5f882be1900e43b
+          - instance: c6g.metal
+            ami: ami-00efc25778562c229
+      fail-fast: false
+    steps:
+    - uses: actions/checkout@v3
+ 
+    - name: Use nightly
+      run: rustup default nightly
+
+    - name: Install aws-ec2
+      run: cargo install --git https://github.com/JonathanWoollett-Light/aws-ec2
+
+    - name: Run
+      run: aws-ec2 --size 32 --instance ${{ matrix.instance }} --ami ${{ matrix.ami }} --path ./  --command "sudo bash run.sh"
+      env:
+        AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_DEFAULT_REGION: eu-west-2
